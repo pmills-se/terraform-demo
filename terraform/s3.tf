@@ -40,8 +40,3 @@ resource "aws_s3_bucket_policy" "public_access" {
   bucket = aws_s3_bucket.bucket.id
   policy = file("policy.json")
 }
-
-provider "aws" {
-  region  = "us-east-1"
-  profile = "se-dev"
-}
