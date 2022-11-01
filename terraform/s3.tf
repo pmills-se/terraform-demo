@@ -8,8 +8,3 @@ resource "aws_s3_bucket_acl" "bucket_acl" {
   acl    = "private"
 
 }
-
-provider "aws" {
-  region  = "us-east-1"
-  profile = "se-dev"
-}
