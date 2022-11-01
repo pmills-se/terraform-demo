@@ -1,24 +1,28 @@
 resource "aws_s3_bucket" "bucket" {
-  bucket = "se-dev-demo-bucket"
+  for_each = var.bucket_names
+  bucket   = "se-dev-demo-bucket-${each.value}"
 
 }
 
 resource "aws_s3_bucket_acl" "bucket_acl" {
-  bucket = aws_s3_bucket.bucket.id
-  acl    = "public-read"
+  for_each = aws_s3_bucket.bucket
+  bucket   = each.value.id
+  acl      = "public-read"
 
 }
 
 resource "aws_s3_object" "index" {
-  bucket       = aws_s3_bucket.bucket.id
+  for_each     = aws_s3_bucket.bucket
+  bucket       = each.value.id
   key          = "index.html"
-  source       = "index.html"
+  source       = "${path.module}/index.html"
   content_type = "text/html"
 
 }
 
 resource "aws_s3_bucket_website_configuration" "bucket_website" {
-  bucket = aws_s3_bucket.bucket.bucket
+  for_each = aws_s3_bucket.bucket
+  bucket   = each.value.id
 
   index_document {
     suffix = "index.html"
@@ -27,7 +31,8 @@ resource "aws_s3_bucket_website_configuration" "bucket_website" {
 }
 
 resource "aws_s3_bucket_cors_configuration" "bucket_cors" {
-  bucket = aws_s3_bucket.bucket.id
+  for_each = aws_s3_bucket.bucket
+  bucket   = each.value.id
 
   cors_rule {
     allowed_methods = ["GET"]
@@ -37,22 +42,24 @@ resource "aws_s3_bucket_cors_configuration" "bucket_cors" {
 }
 
 resource "aws_s3_bucket_policy" "public_access" {
-  bucket = aws_s3_bucket.bucket.id
-  policy = file("policy.json")
+  for_each = aws_s3_bucket.bucket
+  bucket   = each.value.id
+  policy   = <<EOF
+    {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::${each.value.id}/*"
+            ]
+        }
+    ]
 }
-
-terraform {
-  backend "s3" {
-    bucket         = "sportsengine-dev-terraform-state"
-    key            = "terraform-demo/terraform.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
-    profile        = "se-dev"
-    dynamodb_table = "terraform-lock"
-  }
-}
-
-provider "aws" {
-  region  = "us-east-1"
-  profile = "se-dev"
+EOF
 }
