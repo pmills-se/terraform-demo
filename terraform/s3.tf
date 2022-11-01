@@ -10,9 +10,10 @@ resource "aws_s3_bucket_acl" "bucket_acl" {
 }
 
 resource "aws_s3_object" "index" {
-  bucket = aws_s3_bucket.bucket.id
-  key    = "index.html"
-  source = "index.html"
+  bucket       = aws_s3_bucket.bucket.id
+  key          = "index.html"
+  source       = "index.html"
+  content_type = "text/html"
 
 }
 
@@ -34,6 +35,12 @@ resource "aws_s3_bucket_cors_configuration" "bucket_cors" {
   }
 
 }
+
+resource "aws_s3_bucket_policy" "public_access" {
+  bucket = aws_s3_bucket.bucket.id
+  policy = file("policy.json")
+}
+
 terraform {
   backend "s3" {
     bucket         = "sportsengine-dev-terraform-state"
