@@ -1,1 +1,5 @@
 http://se-dev-demo-bucket.s3-website.us-east-1.amazonaws.com/
+
+http://se-dev-demo-bucket-blue.s3-website.us-east-1.amazonaws.com/
+http://se-dev-demo-bucket-red.s3-website.us-east-1.amazonaws.com/
+http://se-dev-demo-bucket-green.s3-website.us-east-1.amazonaws.com/

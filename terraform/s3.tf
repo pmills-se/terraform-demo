@@ -15,8 +15,18 @@ resource "aws_s3_object" "index" {
   for_each     = aws_s3_bucket.bucket
   bucket       = each.value.id
   key          = "index.html"
-  source       = "${path.module}/index.html"
   content_type = "text/html"
+  content       = <<EOF
+
+  <body>
+
+<h1>
+    #DEVOPS ${each.value.id}
+</h1>
+
+</body>
+
+EOF
 
 }
 
