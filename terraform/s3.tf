@@ -38,5 +38,7 @@ resource "aws_s3_bucket_cors_configuration" "bucket_cors" {
 
 resource "aws_s3_bucket_policy" "public_access" {
   bucket = aws_s3_bucket.bucket.id
-  policy = file("policy.json")
+  policy = templatefile("policy.json.tpl", {
+    s3_bucket = aws_s3_bucket.bucket.id,
+  })
 }

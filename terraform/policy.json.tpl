@@ -9,7 +9,7 @@
                 "s3:GetObject"
             ],
             "Resource": [
-                "arn:aws:s3:::se-dev-demo-bucket/*"
+                "arn:aws:s3:::${s3_bucket}/*"
             ]
         }
     ]
